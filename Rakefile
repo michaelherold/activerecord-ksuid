@@ -10,16 +10,40 @@ def with_optional_dependency
 rescue LoadError # rubocop:disable Lint/SuppressedException
 end
 
-require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new(:spec)
-
 default = %w[spec]
+
+if ENV['APPRAISAL_INITIALIZED']
+  require 'rspec/core/rake_task'
+
+  RSpec::Core::RakeTask.new(:spec) do |task, _|
+    task.verbose = false
+  end
+else
+  task :spec do
+    command = String.new('rspec')
+    env = {}
+    if (gemfile = ENV['BUNDLE_GEMFILE'])
+      env['BUNDLE_GEMFILE'] = gemfile
+    else
+      command.prepend('appraisal rails-6.0 ')
+    end
+    success = system(env, command)
+
+    abort "\nRSpec failed: #{$CHILD_STATUS}" unless success
+  end
+end
 
 with_optional_dependency do
   require 'yard-doctest'
   task 'yard:doctest' do
-    command = 'yard doctest'
-    success = system(command)
+    command = String.new('yard doctest')
+    env = {}
+    if (gemfile = ENV['BUNDLE_GEMFILE'])
+      env['BUNDLE_GEMFILE'] = gemfile
+    elsif !ENV['APPRAISAL_INITIALIZED']
+      command.prepend('appraisal rails-6.0 ')
+    end
+    success = system(env, command)
 
     abort "\nYard Doctest failed: #{$CHILD_STATUS}" unless success
   end
@@ -64,11 +88,13 @@ with_optional_dependency do
   task yardstick: %i[yardstick_measure yardstick_verify]
 end
 
-if !ENV['APPRAISAL_INITIALIZED'] && !ENV['CI']
+if ENV['CI']
+  task default: default
+elsif !ENV['APPRAISAL_INITIALIZED']
   require 'appraisal/task'
   Appraisal::Task.new
-  task default: :appraisal
+  task default: default - %w[spec yard:doctest] + %w[appraisal]
 else
   ENV['COVERAGE'] = '1'
-  task default: default
+  task default: default & %w[spec yard:doctest]
 end
