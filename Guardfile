@@ -8,7 +8,7 @@ guard :inch do
   watch(%r{lib/.+\.rb})
 end
 
-guard :rspec, cmd: 'bundle exec rspec' do
+guard :rspec, cmd: 'appraisal rspec' do
   require 'guard/rspec/dsl'
   dsl = Guard::RSpec::Dsl.new(self)
 
