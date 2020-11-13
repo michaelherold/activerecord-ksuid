@@ -4,7 +4,7 @@ require 'ksuid'
 require_relative 'ksuid/binary_type'
 require_relative 'ksuid/type'
 
-module ActiveRecord
+module ActiveRecord # :nodoc:
   # Enables an Active Record model to have a KSUID attribute
   #
   # @api public
