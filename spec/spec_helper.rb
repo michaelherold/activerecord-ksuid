@@ -7,7 +7,7 @@ if ENV['COVERAGE'] || ENV['CI']
     add_filter '/spec/'
   end
 
-  SimpleCov.command_name "rspec"
+  SimpleCov.command_name 'rspec'
 end
 
 begin

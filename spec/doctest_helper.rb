@@ -7,7 +7,7 @@ if ENV['COVERAGE'] || ENV['CI']
     add_filter '/spec/'
   end
 
-  SimpleCov.command_name "yard-doctest"
+  SimpleCov.command_name 'yard-doctest'
 
   YARD::Doctest.after_run do
     SimpleCov.set_exit_exception
