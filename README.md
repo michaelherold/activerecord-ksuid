@@ -3,7 +3,7 @@
 [![Build Status](https://github.com/michaelherold/activerecord-ksuid/workflows/Continuous%20integration/badge.svg)][actions]
 [![Test Coverage](https://api.codeclimate.com/v1/badges/672e331f6006d1a00ec8/test_coverage)][test-coverage]
 [![Maintainability](https://api.codeclimate.com/v1/badges/672e331f6006d1a00ec8/maintainability)][maintainability]
-[![Inline docs](http://inch-ci.org/github/michaelherold/activerecord-ksuid.svg?branch=master)][inch]
+[![Inline docs](http://inch-ci.org/github/michaelherold/activerecord-ksuid.svg?branch=main)][inch]
 
 [inch]: http://inch-ci.org/github/michaelherold/activerecord-ksuid
 [maintainability]: https://codeclimate.com/github/michaelherold/activerecord-ksuid/maintainability
