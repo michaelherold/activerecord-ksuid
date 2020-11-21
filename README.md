@@ -143,7 +143,7 @@ So you’re interested in contributing to KSUID for ActiveRecord? Check out our 
 
 ## Supported Ruby Versions
 
-This library aims to support and is [tested against][travis] the following Ruby versions:
+This library aims to support and is [tested against][actions] the following Ruby versions:
 
 * Ruby 2.5
 * Ruby 2.6
