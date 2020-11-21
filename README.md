@@ -52,7 +52,7 @@ Then, to add proper handling to the field, you will want to mix a module into th
 
 ```ruby
 class Event < ApplicationRecord
-  include KSUID::ActiveRecord[:unique_id]
+  include ActiveRecord::KSUID[:unique_id]
 end
 ```
 
@@ -76,7 +76,7 @@ Once you have generated the table that you will use for your model, you will nee
 
 ```ruby
 class Event < ApplicationRecord
-  include KSUID::ActiveRecord[:my_field_name]
+  include ActiveRecord::KSUID[:my_field_name]
 end
 ```
 
@@ -96,7 +96,7 @@ You will need to mix in the module into your model as well:
 
 ```ruby
 class Event < ApplicationRecord
-  include KSUID::ActiveRecord[:id]
+  include ActiveRecord::KSUID[:id]
 end
 ```
 
@@ -105,10 +105,10 @@ end
 Outside of Rails, you cannot rely on the Railtie to load the appropriate files for you automatically. Toward the start of your application's boot process, you will want to require the following:
 
 ```ruby
-require 'ksuid/activerecord'
+require 'active_record/ksuid'
 
 # If you will be using the ksuid column type in a migration
-require 'ksuid/activerecord/table_definition'
+require 'active_record/ksuid/table_definition'
 ```
 
 Once you have required the file(s) that you need, everything else will work as it does above.
@@ -121,7 +121,7 @@ When you include the KSUID module into your model, you will want to pass the `:b
 
 ```ruby
 class Event < ApplicationRecord
-  include KSUID::ActiveRecord[:my_field_name, binary: true]
+  include ActiveRecord::KSUID[:my_field_name, binary: true]
 end
 ```
 
@@ -131,7 +131,7 @@ Since KSUIDs include a timestamp as well, you can infer the `#created_at` timest
 
 ```ruby
 class Event < ApplicationRecord
-  include KSUID::ActiveRecord[:my_field_name, created_at: true]
+  include ActiveRecord::KSUID[:my_field_name, created_at: true]
 end
 ```
 
@@ -160,7 +160,7 @@ If you would like this library to support another Ruby version or implementation
 
 This library aims to adhere to [Semantic Versioning 2.0.0][semver]. Violations of this scheme should be reported as bugs. Specifically, if a minor or patch version is released that breaks backward compatibility, that version should be immediately yanked and/or a new version should be immediately released that restores compatibility. Breaking changes to the public API will only be introduced with new major versions. As a result of this policy, you can (and should) specify a dependency on this gem using the [Pessimistic Version Constraint][pessimistic] with two digits of precision. For example:
 
-    spec.add_dependency "ksuid", "~> 0.1"
+    spec.add_dependency "activerecord-ksuid", "~> 0.1"
 
 [pessimistic]: http://guides.rubygems.org/patterns/#pessimistic-version-constraint
 [semver]: http://semver.org/spec/v2.0.0.html
