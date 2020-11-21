@@ -114,6 +114,7 @@ Metrics/MethodLength:
 Naming/FileName:
   Exclude:
     - "Appraisals"
+    - "lib/activerecord-ksuid.rb"
 
 Style/AccessorGrouping:
   Enabled: true
