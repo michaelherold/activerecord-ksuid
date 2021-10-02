@@ -27,14 +27,15 @@ Ideally, a bug report should include a pull request with failing specs.
 1. [Fork the repository](https://docs.github.com/en/free-pro-team@latest/github/getting-started-with-github/fork-a-repo).
 2. [Create a topic branch](https://help.github.com/articles/creating-and-deleting-branches-within-your-repository/).
 3. Add specs for your unimplemented feature or bug fix.
-4. Run `appraisal rspec`. If your specs pass, return to step 3.
-5. Implement your feature or bug fix.
-6. Run `appraisal rspec` to check that your specs pass. If they don't, return to step 5.
-7. Run `bundle exec rake`. If any of the linters fail, return to step 5.
-8. Open `coverage/index.html`. If your changes are not completely covered by your tests, return to step 3.
-9. Add documentation for your feature or bug fix.
-10. Commit and push your changes.
-11. [Submit a pull request](https://help.github.com/articles/creating-a-pull-request/).
+4. Run `bundle exec rake db:reset` to create any necessary test databases. This requires PostgreSQL.
+5. Run `appraisal rspec`. If your specs pass, return to step 3.
+6. Implement your feature or bug fix.
+7. Run `appraisal rspec` to check that your specs pass. If they don't, return to step 5.
+8. Run `bundle exec rake`. If any of the linters fail, return to step 5.
+9. Open `coverage/index.html`. If your changes are not completely covered by your tests, return to step 3.
+10. Add documentation for your feature or bug fix.
+11. Commit and push your changes.
+12. [Submit a pull request](https://help.github.com/articles/creating-a-pull-request/).
 
 ## Tools to Help You Succeed
 
