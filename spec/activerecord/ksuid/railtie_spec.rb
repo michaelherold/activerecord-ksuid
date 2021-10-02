@@ -7,7 +7,12 @@ require 'logger'
 require 'activerecord/ksuid'
 require 'active_record/ksuid/railtie'
 
-ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
+ActiveRecord::Base.establish_connection(
+  adapter: ENV.fetch('DRIVER'),
+  host: ENV['DB_HOST'],
+  username: ENV['DB_USERNAME'],
+  database: ENV.fetch('DATABASE', 'activerecord-ksuid_test')
+)
 ActiveRecord::Base.logger = Logger.new(IO::NULL)
 ActiveRecord::Schema.verbose = false
 

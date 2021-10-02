@@ -10,26 +10,43 @@ def with_optional_dependency
 rescue LoadError # rubocop:disable Lint/SuppressedException
 end
 
-default = %w[spec]
+default = %w[spec:sqlite]
+
+namespace :db do
+  desc 'Reset all databases'
+  task reset: %i[]
+end
 
 if ENV['APPRAISAL_INITIALIZED']
   require 'rspec/core/rake_task'
 
-  RSpec::Core::RakeTask.new(:spec) do |task, _|
-    task.verbose = false
+  namespace :spec do
+    task all: %i[sqlite]
+
+    task :sqlite do
+      sh 'DRIVER=sqlite3 DATABASE=":memory:" bundle exec rspec'
+    end
   end
 else
-  task :spec do
-    command = String.new('rspec')
-    env = {}
-    if (gemfile = ENV['BUNDLE_GEMFILE'])
-      env['BUNDLE_GEMFILE'] = gemfile
-    else
-      command.prepend('appraisal rails-6.0 ')
-    end
-    success = system(env, command)
+  namespace :spec do
+    task all: %i[sqlite]
 
-    abort "\nRSpec failed: #{$CHILD_STATUS}" unless success
+    task :sqlite do
+      run_rspec_with_driver('sqlite3', { 'DATABASE' => ':memory:' })
+    end
+
+    def run_rspec_with_driver(driver, env = {})
+      command = String.new('rspec')
+      env['DRIVER'] = driver
+      if (gemfile = ENV['BUNDLE_GEMFILE']) && gemfile.match?(%r{gemfiles/})
+        env['BUNDLE_GEMFILE'] = gemfile
+      else
+        command.prepend('appraisal rails-6.0 ')
+      end
+      success = system(env, command)
+
+      abort "\nRSpec failed: #{$CHILD_STATUS}" unless success
+    end
   end
 end
 
