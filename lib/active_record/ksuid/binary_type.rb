@@ -59,7 +59,7 @@ module ActiveRecord
       # @api private
       # @return [Symbol]
       def type
-        :ksuid_binary
+        :binary
       end
     end
   end
