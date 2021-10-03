@@ -14,14 +14,33 @@ default = %w[spec:sqlite]
 
 namespace :db do
   desc 'Reset all databases'
-  task reset: %i[]
+  task reset: %i[postgresql:reset]
+
+  namespace :postgresql do
+    desc 'Reset PostgreSQL database'
+    task reset: %i[drop create]
+
+    desc 'Create PostgreSQL database'
+    task :create do
+      sh 'createdb -U postgres activerecord-ksuid_test'
+    end
+
+    desc 'Drops PostgreSQL database'
+    task :drop do
+      sh %(psql -d postgres -U postgres -c 'DROP DATABASE IF EXISTS "activerecord-ksuid_test"')
+    end
+  end
 end
 
 if ENV['APPRAISAL_INITIALIZED']
   require 'rspec/core/rake_task'
 
   namespace :spec do
-    task all: %i[sqlite]
+    task all: %i[postgresql sqlite]
+
+    task :postgresql do
+      sh 'DRIVER=postgresql DB_USERNAME=postgres bundle exec rspec'
+    end
 
     task :sqlite do
       sh 'DRIVER=sqlite3 DATABASE=":memory:" bundle exec rspec'
@@ -29,7 +48,11 @@ if ENV['APPRAISAL_INITIALIZED']
   end
 else
   namespace :spec do
-    task all: %i[sqlite]
+    task all: %i[postgresql sqlite]
+
+    task :postgresql do
+      run_rspec_with_driver('postgresql', { 'DB_USERNAME' => 'postgres' })
+    end
 
     task :sqlite do
       run_rspec_with_driver('sqlite3', { 'DATABASE' => ':memory:' })

@@ -58,7 +58,7 @@ module ActiveRecord
       # @api private
       # @return [Symbol]
       def type
-        :ksuid
+        :string
       end
     end
   end
