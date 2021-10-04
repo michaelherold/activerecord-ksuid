@@ -1,0 +1,29 @@
+From 3d919aea067fcdb3fb7551a6da776f462a1bb16c Mon Sep 17 00:00:00 2001
+From: Michael Herold <opensource@michaeljherold.com>
+Date: Mon, 4 Oct 2021 21:25:24 -0500
+Subject: [PATCH] Backport the MySQL 8.0.0+ fix
+
+This is a backport version of commit 724aa9029 from the Rails 5.1
+branch.
+---
+ .../connection_adapters/abstract_mysql_adapter.rb             | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/lib/active_record/connection_adapters/abstract_mysql_adapter.rb b/lib/active_record/connection_adapters/abstract_mysql_adapter.rb
+index b8fdf26d80..17a02469e9 100644
+--- a/lib/active_record/connection_adapters/abstract_mysql_adapter.rb
++++ b/lib/active_record/connection_adapters/abstract_mysql_adapter.rb
+@@ -76,7 +76,9 @@ def initialize(connection, logger, connection_options, config)
+
+       def internal_string_options_for_primary_key # :nodoc:
+         super.tap { |options|
+-          options[:collation] = collation.sub(/\A[^_]+/, 'utf8') if CHARSETS_OF_4BYTES_MAXLEN.include?(charset)
++          if CHARSETS_OF_4BYTES_MAXLEN.include?(charset) && (mariadb? || version < "8.0.0")
++            options[:collation] = collation.sub(/\A[^_]+/, 'utf8')
++          end
+         }
+       end
+
+--
+2.33.0
+
