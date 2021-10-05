@@ -12,6 +12,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
     services:
+      mysql:
+        image: mysql
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        ports:
+          - 3306:3306
       postgres:
         image: postgres
         env:
@@ -50,7 +56,9 @@ jobs:
     env:
       CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       DB_HOST: 127.0.0.1
+      MYSQL_HOST: 127.0.0.1
       PGHOST: 127.0.0.1
+      RAILS_VERSION: ${{ matrix.rails }}
     steps:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
@@ -72,5 +80,5 @@ jobs:
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
           ./cc-test-reporter before-build
-          bundle exec rake db:reset spec:all yard:doctest
+          bundle exec rake backport db:reset spec:all yard:doctest
           ./cc-test-reporter after-build --exit-code $?

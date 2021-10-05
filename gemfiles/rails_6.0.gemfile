@@ -2,8 +2,10 @@
 
 source "https://rubygems.org"
 
+gem "activerecord-jdbcmysql-adapter", "~> 60", platforms: [:jruby]
 gem "activerecord-jdbcpostgresql-adapter", "~> 60", platforms: [:jruby]
 gem "activerecord-jdbcsqlite3-adapter", "~> 60", platforms: [:jruby]
+gem "mysql2", ">= 0.4.4", platforms: [:mri, :mingw, :x64_mingw]
 gem "pg", ">= 0.18", "< 2.0", platforms: [:mri, :mingw, :x64_mingw]
 gem "rails", "~> 6.0.0"
 gem "sqlite3", "~> 1.4", platforms: [:mri, :mingw, :x64_mingw]

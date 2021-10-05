@@ -10,11 +10,38 @@ def with_optional_dependency
 rescue LoadError # rubocop:disable Lint/SuppressedException
 end
 
-default = %w[spec:sqlite]
+default = %w[backport spec:sqlite]
+
+desc 'Applies backports when necessary'
+task :backport do
+  if ENV['RAILS_VERSION'] == '5.0'
+    patch = 'spec/support/patches/backport-mysql-fix.patch'
+    sh <<~PATCH
+      if ! patch -R -p1 -s -f --dry-run -d "$(gem env gemdir)"/gems/activerecord-5.0* <#{patch}; then
+        patch -p1 -d "$(gem env gemdir)"/gems/activerecord-5.0* <#{patch}
+      fi
+    PATCH
+  end
+end
 
 namespace :db do
   desc 'Reset all databases'
-  task reset: %i[postgresql:reset]
+  task reset: %i[mysql:reset postgresql:reset]
+
+  namespace :mysql do
+    desc 'Reset MySQL database'
+    task reset: %i[drop create]
+
+    desc 'Create MySQL database'
+    task :create do
+      sh %(mysql -u root -e 'CREATE DATABASE `activerecord-ksuid_test`;')
+    end
+
+    desc 'Drops MySQL database'
+    task :drop do
+      sh %(mysql -u root -e 'DROP DATABASE IF EXISTS `activerecord-ksuid_test`;')
+    end
+  end
 
   namespace :postgresql do
     desc 'Reset PostgreSQL database'
@@ -36,7 +63,11 @@ if ENV['APPRAISAL_INITIALIZED']
   require 'rspec/core/rake_task'
 
   namespace :spec do
-    task all: %i[postgresql sqlite]
+    task all: %i[mysql postgresql sqlite]
+
+    task :mysql do
+      sh 'DRIVER=mysql2 DB_HOST=127.0.0.1 DB_USERNAME=root bundle exec rspec'
+    end
 
     task :postgresql do
       sh 'DRIVER=postgresql DB_USERNAME=postgres bundle exec rspec'
@@ -48,7 +79,11 @@ if ENV['APPRAISAL_INITIALIZED']
   end
 else
   namespace :spec do
-    task all: %i[postgresql sqlite]
+    task all: %i[mysql postgresql sqlite]
+
+    task :mysql do
+      run_rspec_with_driver('mysql2', { 'DB_HOST' => '127.0.0.1', 'DB_USERNAME' => 'root' })
+    end
 
     task :postgresql do
       run_rspec_with_driver('postgresql', { 'DB_USERNAME' => 'postgres' })
