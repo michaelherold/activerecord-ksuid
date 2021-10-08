@@ -59,6 +59,8 @@ namespace :db do
   end
 end
 
+task spec: %i[spec:all]
+
 if ENV['APPRAISAL_INITIALIZED']
   require 'rspec/core/rake_task'
 
