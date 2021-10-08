@@ -41,6 +41,7 @@ module ActiveRecord
         return unless value
 
         value = value.to_s if value.is_a?(::ActiveRecord::Type::Binary::Data)
+        value = ::KSUID::Utils.byte_string_from_hex(value[2..-1]) if value.start_with?('\x')
         ::KSUID.call(value)
       end
 
